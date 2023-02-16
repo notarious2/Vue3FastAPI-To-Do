@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunktodo_front"]=self["webpackChunktodo_front"]||[]).push([[255],{5255:function(n,t,r){r.r(t),r.d(t,{default:function(){return c}});var o=r(6252);function u(n,t){return(0,o.wg)(),(0,o.iD)("h1",null,"Page not found, try again")}var e=r(3744);const a={},f=(0,e.Z)(a,[["render",u]]);var c=f}}]);

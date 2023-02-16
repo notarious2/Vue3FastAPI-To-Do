@@ -1,0 +1,60 @@
+{
+  "name": "todo_front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "sitemap": "vue-cli-service sitemap"
+  },
+  "dependencies": {
+    "@vuepic/vue-datepicker": "^3.5.3",
+    "axios": "^0.27.2",
+    "core-js": "^3.8.3",
+    "express": "^4.18.2",
+    "pinia": "^2.0.22",
+    "pinia-plugin-persist": "^1.0.0",
+    "serve-static": "^1.15.0",
+    "swiper": "^8.4.4",
+    "vee-validate": "^4.7.3",
+    "vue": "^3.2.13",
+    "vue-gtag": "^2.0.1",
+    "vue-router": "^4.1.5",
+    "vuedraggable": "^4.1.0",
+    "web-vitals": "^3.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "vue-cli-plugin-sitemap": "~2.3.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "engines": {
+    "node": "16.16.0"
+  }
+}

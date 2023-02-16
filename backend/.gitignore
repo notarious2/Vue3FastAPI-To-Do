@@ -1,0 +1,11 @@
+*.pyc 
+venv/ 
+env/
+__pycache__/ 
+*.log 
+.vscode/ 
+node_modules/ 
+coverage/ 
+__pycache__
+vscode
+.env
