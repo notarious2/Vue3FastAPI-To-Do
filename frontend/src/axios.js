@@ -25,7 +25,7 @@ axios.interceptors.response.use(
     else if (
       error.response.status === 401 &&
       error.response.data.detail === "Token expired" &&
-      error.request.responseURL.includes(axios.defaults.baseURL) &&
+      error.request.responseURL.includes(axios.defaults.baseURL + "/task") &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
@@ -37,7 +37,7 @@ axios.interceptors.response.use(
       return axios.request(originalRequest);
     } else {
       // some other error
-      location.reload();
+      console.log("Other error");
       return Promise.reject(error);
     }
   }

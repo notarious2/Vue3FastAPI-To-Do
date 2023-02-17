@@ -8,6 +8,7 @@ export const useAuthStore = defineStore("authentication", {
     // initialize state from local storage to enable user to stay logged in
     // user: JSON.parse(localStorage.getItem("user")),
     errorLogIn: false,
+    errorMessage: "",
     isAuthenticated: false,
     errorRegister: false,
   }),
@@ -36,6 +37,12 @@ export const useAuthStore = defineStore("authentication", {
         .catch((error) => {
           console.log(error);
           this.errorLogIn = true;
+          // catching connection refused error
+          if (error.message === "Network Error") {
+            this.errorMessage = error.message;
+          } else {
+            this.errorMessage = "Incorrect username/email or password";
+          }
         });
     },
     async register(payload) {
@@ -66,18 +73,16 @@ export const useAuthStore = defineStore("authentication", {
     async refreshToken() {
       var user = localStorage.getItem("user");
       user = JSON.parse(user);
-      const refresh = user["refresh_token"];
+      const refresh = user["refresh"];
       localStorage.removeItem("user");
 
-      const refreshToken = await axios.get("user/jwt/refresh/", {
-        headers: {
-          Authorization: "Bearer " + refresh,
-        },
+      const refreshToken = await axios.post("user/jwt/refresh/", {
+        refresh: refresh,
       });
       // reassign user in local storage
-      user["access_token"] = refreshToken.data.access_token;
+      user["access"] = refreshToken.data.access;
       localStorage.setItem("user", JSON.stringify(user));
-      return refreshToken.data.access_token;
+      return refreshToken.data.access;
     },
 
     clearError() {
