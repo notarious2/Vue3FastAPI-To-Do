@@ -3,6 +3,24 @@
   <main>
     <h1>Welcome to the to-do list app</h1>
     <h2>Simple, yet powerful task management application</h2>
+    <div class="linksbox">
+      <post-it id="demo-link">
+        <div class="inner-demo-link">
+          <p>
+            <strong> Try Demo Playground. No registration required! </strong>
+          </p>
+          <button
+            @click="
+              router.push({ name: 'Demo' });
+              demoAnalytics();
+            "
+            class="button-74"
+          >
+            Demo
+          </button>
+        </div>
+      </post-it>
+    </div>
     <div class="swip">
       <swiper
         :slidesPerView="1"
@@ -41,36 +59,6 @@
             class="slide-3 swiper-lazy"
             rel="preload" /></swiper-slide
       ></swiper>
-      <div class="linksbox">
-        <post-it id="registration-form">
-          <div class="inner-registration-form">
-            <p><strong> Try Demo. No registration required! </strong></p>
-            <button
-              @click="
-                router.push({ name: 'Demo' });
-                demoAnalytics();
-              "
-              class="button-74"
-            >
-              Demo
-            </button>
-          </div>
-        </post-it>
-        <post-it id="registration-form">
-          <div class="inner-registration-form">
-            <p><strong> Join for Free </strong></p>
-            <button
-              @click="
-                router.push({ name: 'Registration' });
-                registerAnalytics();
-              "
-              class="button-74"
-            >
-              Register
-            </button>
-          </div>
-        </post-it>
-      </div>
     </div>
   </main>
   <the-footer class="footer"></the-footer>
@@ -110,13 +98,6 @@ function demoAnalytics() {
     value: 1,
   });
 }
-function registerAnalytics() {
-  event("register-button-clicked", {
-    event_category: "analytics",
-    event_label: "Register button pressed",
-    value: 1,
-  });
-}
 </script>
 
 <style scoped>
@@ -138,20 +119,36 @@ function registerAnalytics() {
 }
 .linksbox {
   display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
 }
-#registration-form {
+#demo-link {
   display: flex;
-  width: 70%;
+  width: 60%;
   justify-content: center;
   align-items: center;
-
   padding: 0px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 3rem;
+  min-height: 5em;
+  background: #bbe1f5;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+#demo-link:after {
+  content: "";
+  border-color: #bbe1f5;
+  border-bottom-left-radius: 15px;
+  bottom: -1em;
+  left: 0;
+  right: 1em;
+  border-width: 0.5em;
+}
+.post-it-note:before {
+  border-color: #53b2e5 transparent;
+  bottom: -1em;
+  border-width: 1em 1em 0 0;
 }
 
-.inner-registration-form {
+.inner-demo-link {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -165,11 +162,9 @@ main {
   margin-top: auto;
 }
 .button-74 {
-  background-color: #fbeee0;
-  border: 2px solid #422800;
+  background-color: #2179b8;
+  border: 2px solid transparent;
   border-radius: 25px;
-  box-shadow: #422800 3px 3px 0 0;
-  color: #422800;
   cursor: pointer;
   font-weight: 300;
   font-size: 16px;
@@ -177,12 +172,16 @@ main {
   line-height: 20px;
   text-align: center;
   text-decoration: none;
+  color: #bbe1f5;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   flex: 0;
-  flex-basis: 40px;
-  padding: 0px 20px;
+  width: 120px;
+  margin-bottom: 10px;
+}
+.button-74:hover {
+  background-color: #18458e;
 }
 </style>
 
@@ -193,9 +192,7 @@ main {
   height: 0px;
   width: 15px;
 }
-</style>
 
-<style>
 .swiper-pagination-bullet {
   margin-right: 5px !important;
 }
