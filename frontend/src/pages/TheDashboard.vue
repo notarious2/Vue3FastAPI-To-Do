@@ -142,7 +142,7 @@ function demoAnalytics() {
   right: 1em;
   border-width: 0.5em;
 }
-.post-it-note:before {
+#demo-link:before {
   border-color: #53b2e5 transparent;
   bottom: -1em;
   border-width: 1em 1em 0 0;
