@@ -5,6 +5,7 @@
 ### Demo
 
 <p>https://www.stickydo.us</p>
+<p>same frontend, but using <strong>DRF</strong> on backend https://django.stickydo.us | repo: https://github.com/notarious2/Vue3DRF-To-Do</p>
 
 ### Frontend
 
