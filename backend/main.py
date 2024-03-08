@@ -1,12 +1,10 @@
 from fastapi import FastAPI
-from database import Base, engine
+from database import engine
+from models import BaseModel
 from routers import user, task, authorization
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_jwt_auth import AuthJWT
-from schemas import Settings
 
 app = FastAPI()
-Base.metadata.create_all(bind=engine)
 
 app.include_router(user.router)
 app.include_router(task.router)
@@ -20,20 +18,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create initialized database table
+
+async def create_tables() -> None:
+    async with engine.begin() as conn:
+        await conn.run_sync(BaseModel.metadata.create_all)
+
 @app.on_event("startup")
 async def startup():
-    Base.metadata.create_all(bind=engine)
+    await create_tables()
 
-
-
-@AuthJWT.load_config
-def get_config():
-    return Settings()
-
-@app.get('/', tags=["root"])
-async def root():
-    return "Hello World!"
 
 
 

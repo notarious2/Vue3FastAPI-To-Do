@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "vue3fastapi-to-do"
+version = "0.1.0"
+description = "Sticky-do App"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "vue3fastapi_to_do"}]
+
+[tool.poetry.dependencies]
+python = "3.11.3"
+fastapi = "^0.110.0"
+uvicorn = "^0.27.1"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.28"}
+pydantic = "^2.6.3"
+pydantic-settings = "^2.2.1"
+aiosqlite = "^0.20.0"
+fastapi-jwt-auth = "^0.5.0"
+passlib = "^1.7.4"
+jose = "^1.0.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.9"
+bcrypt = "^4.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

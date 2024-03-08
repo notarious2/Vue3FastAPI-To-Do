@@ -10,22 +10,25 @@ class TaskBase(BaseModel):
     date: date
     text: str
     completed: bool = False #default value show in fastapi docs
+    
     class Config:
-        orm_mode = True
-class TaskCreate(TaskBase):
-    pass
+        from_attributes = True
+
+class CreateTaskSchema(TaskBase):
+    text: str
+    priority: int
+
 
 class TaskDisplay(TaskBase):
     user_id: str
     task_id: str
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Task(TaskBase):
     task_id: str
     user_id: str
-    # class Config:
-    #     orm_mode = True
+
 
 class TaskOptional(TaskBase):
     priority: Optional[int]
@@ -33,7 +36,7 @@ class TaskOptional(TaskBase):
     text: Optional[str]
     completed: Optional[bool]
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class User(BaseModel):
@@ -58,13 +61,7 @@ class UserCreate(BaseModel):
 class UserDisplay(BaseModel):
     username: str
     email: str
-    user_id: str
     created_at: datetime
 
-    # makes links between User and UserDisplay schemas
     class Config:
         orm_mode = True
-
-
-class Settings(BaseModel):
-    authjwt_secret_key: str = str(settings.SECRET_KEY)
