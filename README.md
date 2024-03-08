@@ -1,4 +1,4 @@
-## Vue 3 and FastAPI
+# Simple, yet powerfull app written using Vue 3 and FastAPI
 
 ---
 
