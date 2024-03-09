@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from database import get_async_session
 import schemas, crud
 from typing import List
@@ -11,7 +11,6 @@ router = APIRouter(
     tags = ['user']
 )
 
-#CREATE A USER
 @router.post("/register/", response_model=UserDisplay)
 async def add_user(user_schema: UserCreate, db_session: AsyncSession = Depends(get_async_session)):
 
@@ -37,9 +36,15 @@ async def get_users(db_session: AsyncSession = Depends(get_async_session)):
 
 @router.delete("/{user_id}/")
 async def delete_user_by_id(user_id: int, db_session: AsyncSession = Depends(get_async_session)):
-    return await crud.delete_user_by_id(db_session, user_id)
+    if not await crud.delete_user_by_id(db_session, user_id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail = f"User with id {user_id} is not found")
+    
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.delete("/")
 async def delete_all_users(db_session: AsyncSession = Depends(get_async_session)):
-    return await crud.delete_all_users(db_session)
+    await crud.delete_all_users(db_session)
+    
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

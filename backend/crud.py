@@ -1,31 +1,37 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, select, or_
-from sqlalchemy.sql import case
-import schemas
+from sqlalchemy import and_, select, or_, update, cast, Date
 from models import User, Task
-from schemas import UserCreate, CreateTaskSchema
+from schemas import UserCreate, CreateTaskSchema, UpdateTaskSchema
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils import get_hashed_password
+from datetime import date
 
 
-async def get_task_by_id(db_session: AsyncSession, id: int):
+async def get_task_by_id(db_session: AsyncSession, id: int) -> Task | None:
     task = await db_session.get(Task, id)
     return task
 
-async def add_task(db_session: AsyncSession, create_task_schema: CreateTaskSchema, current_user: User):
-        
+async def get_tasks_by_date(db_session: AsyncSession, selected_date: date, current_user: User) -> list[Task]:
+    statement = select(Task).where(and_(cast(Task.created_at, Date) == cast(selected_date, Date), Task.user_id == current_user.id)).order_by(Task.priority.asc())
+    result = await db_session.execute(statement)
+    tasks = result.scalars().all()  
+    return tasks
+
+
+async def create_task(db_session: AsyncSession, create_task_schema: CreateTaskSchema, current_user: User) -> Task:
     task = Task(
         priority = create_task_schema.priority,
         text = create_task_schema.text,
-        user_id = current_user.user_id)
+        user_id = current_user.id)
 
     db_session.add(task)
     await db_session.commit()
+    await db_session.refresh(task)
     return task
 
 async def get_user_tasks(db_session: AsyncSession, current_user: User):
-    result =  await db_session.execute(select(Task)).filter(Task.user_id == current_user.user_id)
+    result =  await db_session.execute(select(Task)).filter(Task.user_id == current_user.id)
     users = result.scalars().all()
     return users
 
@@ -40,39 +46,36 @@ async def delete_task(db_session: AsyncSession, task_id: int, user_id: int):
     await db_session.commit()
 
 
-
-def update_task(db: Session, task_id: int, new_task: schemas.TaskOptional, user_id: str):
-    # retrieve the task
-    task = get_task_by_id(db=db, id=task_id)
-    if not task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-        detail = f"task with id {task_id} not found")
-    # task text can be updated by the user who created it
-    if task.user_id != user_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-        detail = "Only Task Creator Can Delete Task")
-    # can change text, priority and completed if passed
+async def update_task(db_session: AsyncSession, task: Task, new_task: UpdateTaskSchema) -> Task:
     if new_task.text: task.text = new_task.text 
     if new_task.priority: task.priority = new_task.priority 
-    #need to be careful here as completed is BOOLEAN
-    if new_task.completed!=None: task.completed = new_task.completed 
-    db.commit()
-    return "task updated!"
+    if new_task.completed is not None:
+        task.completed = new_task.completed
 
-def update_task_order(db: Session, payload: dict, current_user: User):
-    # extract date from payload - which is the only key
-    payload = payload['update']
-    # Load ALL TASKS of the user for a SPECIFIC DATE
-    tasks = db.query(models.TaskModel).filter(and_(models.TaskModel.user_id == current_user.user_id), \
-        models.TaskModel.task_id.in_(payload))
-    # Update multiple rows of Priority based on payload containing ID and PRIORITY to be assigned
-    tasks.filter(models.TaskModel.task_id.in_(payload)) \
-        .update({models.TaskModel.priority: case(payload, value=models.TaskModel.task_id)}, synchronize_session=False)
-    db.commit()
+    await db_session.commit()
+    await db_session.refresh(task)
+    
+    return task
 
 
+async def bulk_update_priorities(db_session: AsyncSession, priorities: dict[int, int], current_user: User):
+    """
+    priorities hold id:new_priority key-pair dictonary
+    """
+    # make sure all tasks (ids) belong to the current user
+    result = await db_session.execute(select(Task.id).where(and_(Task.user_id == current_user.id, Task.id.in_(priorities))))
+    task_ids = result.scalars().all() # returns list of ids
 
-# USER RELATED QUERIES
+    # task ids provided doesn't match task ids found for user
+    if not len(priorities) == len(task_ids):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Provided ids doesn't match tasks of the user [{priorities}]")
+
+    # unpack into {id: key, priority:value} list
+    priorities_to_update = [{"id": id, "priority": priority} for id, priority in priorities.items()]
+
+    await db_session.execute(update(Task), priorities_to_update)
+    await db_session.commit()
+
 
 async def get_user_by_id(db_session: AsyncSession, id: int):
       user = await db_session.get(User, id)
@@ -80,7 +83,7 @@ async def get_user_by_id(db_session: AsyncSession, id: int):
 
 
 async def get_user_by_username_or_email(db_session: AsyncSession, username: str):
-    result = await db_session.execute(select(User).where(or_(User.username == username), User.email == username))
+    result = await db_session.execute(select(User).where(or_(User.username == username, User.email == username)))
     
     return result.scalar_one_or_none()
 
@@ -110,13 +113,15 @@ async def get_users(db_session: AsyncSession):
     return result.scalars().all()
 
 
-async def delete_user_by_id(db_session: AsyncSession, user_id: int):
+async def delete_user_by_id(db_session: AsyncSession, user_id: int) -> bool:
     user = await db_session.get(User, id)
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-        detail = f"user with id {user_id} is not found")
+        return False
+
     await db_session.delete(user)
     await db_session.commit()
+
+    return True
 
 
 async def delete_all_users(db_session: Session):

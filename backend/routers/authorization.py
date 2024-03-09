@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm.session import Session
 from models import User
 from database import get_async_session
 import crud
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from utils import verify_hashed_password
 from fastapi.encoders import jsonable_encoder
-import datetime
-from config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from auth import create_access_token, create_refresh_token
 
@@ -19,7 +16,7 @@ router = APIRouter(
 )
 
 @router.post('/jwt/create/')
-async def login(db_session: Session = Depends(get_async_session), form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(db_session: AsyncSession = Depends(get_async_session), form_data: OAuth2PasswordRequestForm = Depends()):
    """
     ## LogIn a User
     This requires the following fields:
@@ -31,14 +28,15 @@ async def login(db_session: Session = Depends(get_async_session), form_data: OAu
     ```
         
    """ 
-   user = await authenticate_user(db=db_session, username=form_data.username, password=form_data.password)
+   user = await authenticate_user(db_session, username=form_data.username, password=form_data.password)
+
    if not user:
     raise HTTPException(
        	status_code=status.HTTP_401_UNAUTHORIZED,
        	detail="Incorrect username or password",
        	headers={"WWW-Authenticate": "Bearer"},
    	)
-   access_token = create_access_token(subject = user.username, expires_time=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+   access_token = create_access_token(subject = user.username)
    refresh_token = create_refresh_token(subject = user.username)
    
     
@@ -65,9 +63,7 @@ async def login(db_session: Session = Depends(get_async_session), form_data: OAu
 #     return {"access_token": new_access_token}
 
 
-#Authenticate user based on username/email and password
-async def authenticate_user(username: str, password: str, db_session: AsyncSession):
-    # find user with such username
+async def authenticate_user(db_session: AsyncSession, username: str, password: str):
     user: User | None = await crud.get_user_by_username_or_email(db_session, username)
     if not user:
         return False

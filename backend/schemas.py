@@ -1,40 +1,35 @@
-from datetime import date
+from datetime import date, datetime
 from pydantic import BaseModel
-from typing import Optional
-from config import settings
-from datetime import datetime
 
 
-class TaskBase(BaseModel):
+
+class CreateTaskSchema(BaseModel):
+    text: str
     priority: int
+
+
+class TasksByDateSchema(BaseModel):
     date: date
-    text: str
-    completed: bool = False #default value show in fastapi docs
+
+
+class UpdateTaskSchema(BaseModel):
+    priority: int | None = None
+    text: str | None = None
+    completed: bool | None = None
+
+
+class UpdateTaskPrioritiesSchema(BaseModel):
+    """id:priority dictionary to update"""
+    priorities: dict[int, int]
     
-    class Config:
-        from_attributes = True
 
-class CreateTaskSchema(TaskBase):
-    text: str
+class DisplayTaskSchema(BaseModel):
+    id: int
     priority: int
+    text: str
+    completed: bool
+    created_at: datetime
 
-
-class TaskDisplay(TaskBase):
-    user_id: str
-    task_id: str
-    class Config:
-        from_attributes = True
-
-class Task(TaskBase):
-    task_id: str
-    user_id: str
-
-
-class TaskOptional(TaskBase):
-    priority: Optional[int]
-    date: Optional[date]
-    text: Optional[str]
-    completed: Optional[bool]
     class Config:
         from_attributes = True
 
@@ -46,8 +41,7 @@ class User(BaseModel):
     username: str
     password: str
     created_at: datetime
-    # class Config:
-    #     orm_mode = True
+
 
 class UserCreate(BaseModel):
     name: str
@@ -55,13 +49,8 @@ class UserCreate(BaseModel):
     username: str
     password: str
 
-    class Config:
-        orm_mode = True
 
 class UserDisplay(BaseModel):
     username: str
     email: str
     created_at: datetime
-
-    class Config:
-        orm_mode = True

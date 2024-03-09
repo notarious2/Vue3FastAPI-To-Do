@@ -3,8 +3,16 @@ from database import engine
 from models import BaseModel
 from routers import user, task, authorization
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_tables()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(user.router)
 app.include_router(task.router)
@@ -23,9 +31,8 @@ async def create_tables() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(BaseModel.metadata.create_all)
 
-@app.on_event("startup")
-async def startup():
-    await create_tables()
+
+
 
 
 
