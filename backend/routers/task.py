@@ -1,17 +1,18 @@
 from datetime import date
 
-from auth import get_current_user
-from database import get_async_session
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from models import User
-from repositories.task_repo import TaskRepository
-from schemas import (
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.auth import get_current_user
+from backend.database import get_async_session
+from backend.models import User
+from backend.repositories.task_repo import TaskRepository
+from backend.schemas import (
     CreateTaskSchema,
     DisplayTaskSchema,
     UpdateTaskPrioritiesSchema,
     UpdateTaskSchema,
 )
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/task", tags=["task"])
 

@@ -2,13 +2,14 @@ from datetime import datetime, timedelta
 from typing import Any
 
 import jwt
-from config import settings
-from database import get_async_session
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from models import User
-from repositories.user_repo import UserRepository
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.config import settings
+from backend.database import get_async_session
+from backend.models import User
+from backend.repositories.user_repo import UserRepository
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="user/jwt/create/", scheme_name="JWT")  # important path to get token
 

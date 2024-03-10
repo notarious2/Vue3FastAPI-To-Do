@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
 
-from database import engine
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import BaseModel
-from routers import authorization, task, user
+
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from backend.database import engine
+from backend.models import metadata
+from backend.routers import authorization, task, user
 
 
 @asynccontextmanager
@@ -29,5 +31,6 @@ app.add_middleware(
 
 
 async def create_tables() -> None:
+    metadata.bind = engine
     async with engine.begin() as conn:
-        await conn.run_sync(BaseModel.metadata.create_all)
+        await conn.run_sync(metadata.create_all)
