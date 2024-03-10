@@ -5,13 +5,14 @@
 ### Demo
 
 <p>https://www.stickydo.us</p>
+<a href="https://api.stickydo.us/docs">Swagger</a></p>
 <p>same frontend, but using <strong>DRF</strong> on backend https://django.stickydo.us | repo: https://github.com/notarious2/Vue3DRF-To-Do</p>
 
 ### Frontend
 
 <ul>
     <li>
-        <p>Latest Vue 3 <strong>Composition API</strong> Script Setup</p>
+        <p>Latest <strong>Vue 3 Composition API</strong> Script Setup</p>
     </li>
     <li>
         <p><strong>Drag and drop</strong> functionality to change priority of tasks thanks to <a href="https://github.com/SortableJS/vue.draggable.next">Vue Draggable Next</a></p>
@@ -25,13 +26,20 @@
     <li>
         <p><strong>Axios</strong> for making HTTP Requests, including advanced interceptors usage to <strong>refresh</strong> JWT tokens</p>
     </li>
+    <li>
+        <p><strong>Google Analytics</strong> Integration including events</p>
+    </li>
 </ul>
 
 ### Backend
 
 <ul>
     <li>
-        <p>FastAPI</p>
+        <p>FastAPI with Pydantic 2</p>
+    </li>
+    <li>
+        <p>Async SQLite with latest Async SQLAlchemy ORM</p>
+    </li>
     <li>
         <p>JWT refresh and access tokens for Authentication</p>
     </li>
@@ -39,10 +47,13 @@
         <p>Users may login using <strong>email</strong> or <strong>username</strong></p>
     </li>
     <li>
-        <p>Open API/Swagger documentation available <a href="https://todoapp-vue3-fastapi-backend-production.up.railway.app/docs">Online</a></p>
+        <p>Open API/Swagger documentation available <a href="https://api.stickydo.us/docs">Online</a></p>
     </li>
     <li>
-        <p>SQLAlchemy ORM</p>
+        <p>Linting and Formatting with <strong>Ruff</strong> with precommit hook</p>
+    </li>
+    <li>
+        <p>Package Management with <strong>Poetry</strong></p>
     </li>
 </ul>
 
