@@ -9,3 +9,4 @@ coverage/
 __pycache__
 vscode
 .env
+*.db

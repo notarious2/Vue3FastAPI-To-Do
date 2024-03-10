@@ -1,9 +1,11 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from database import engine
 from models import BaseModel
-from routers import user, task, authorization
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+from routers import authorization, task, user
 
 
 @asynccontextmanager
@@ -20,7 +22,7 @@ app.include_router(authorization.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,11 +32,3 @@ app.add_middleware(
 async def create_tables() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(BaseModel.metadata.create_all)
-
-
-
-
-
-
-
-

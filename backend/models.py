@@ -1,9 +1,18 @@
-from email.policy import default
-from sqlalchemy import UUID, Integer, String, Boolean, ForeignKey, DateTime, MetaData, func
-from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
-from datetime import datetime
 import uuid
+from datetime import date, datetime
 
+from sqlalchemy import (
+    UUID,
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    MetaData,
+    String,
+    func,
+)
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 metadata = MetaData()
 
@@ -14,14 +23,14 @@ class BaseModel(DeclarativeBase):
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
     )
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     def to_dict(self):
         return {field.name: getattr(self, field.name) for field in self.__table__.c}
-
-
 
 
 class User(BaseModel):
@@ -34,9 +43,8 @@ class User(BaseModel):
     name: Mapped[str] = mapped_column(String(150), default="")
     email: Mapped[str] = mapped_column(String(254), unique=True)
     last_login: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    
-    tasks: Mapped[list["Task"]] = relationship(back_populates="user")
 
+    tasks: Mapped[list["Task"]] = relationship(back_populates="user")
 
 
 class Task(BaseModel):
@@ -45,10 +53,9 @@ class Task(BaseModel):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     guid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, default=uuid.uuid4)
     priority: Mapped[int] = mapped_column(Integer)
-    text: Mapped[str] = mapped_column(String)    
+    text: Mapped[str] = mapped_column(String)
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    posted_at: Mapped[date] = mapped_column(Date)
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="tasks")
-
-

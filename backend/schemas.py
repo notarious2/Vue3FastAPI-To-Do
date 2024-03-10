@@ -1,11 +1,12 @@
 from datetime import date, datetime
-from pydantic import BaseModel
 
+from pydantic import BaseModel
 
 
 class CreateTaskSchema(BaseModel):
     text: str
     priority: int
+    posted_at: date
 
 
 class TasksByDateSchema(BaseModel):
@@ -20,8 +21,9 @@ class UpdateTaskSchema(BaseModel):
 
 class UpdateTaskPrioritiesSchema(BaseModel):
     """id:priority dictionary to update"""
+
     priorities: dict[int, int]
-    
+
 
 class DisplayTaskSchema(BaseModel):
     id: int
