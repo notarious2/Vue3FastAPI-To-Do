@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "@/axios";
 import router from "@/router.js";
+import { trackUserLoggedInGA, trackUserRegistrationGA } from '@/gaUtils';
+
 
 export const useAuthStore = defineStore("authentication", {
   state: () => ({
@@ -33,6 +35,8 @@ export const useAuthStore = defineStore("authentication", {
           this.token = response.data["access"];
           this.isAuthenticated = true;
           router.push({ name: "Home" });
+          trackUserLoggedInGA();
+
         })
         .catch((error) => {
           console.log(error);
@@ -53,10 +57,11 @@ export const useAuthStore = defineStore("authentication", {
           },
         })
         .then((response) => {
-          router.push({ name: "Authorization" });
           console.log(
             `User ${response.data.username} has been successfully created!`
           );
+          router.push({ name: "Authorization" });
+          trackUserRegistrationGA();
         })
         .catch((error) => {
           console.log(error);

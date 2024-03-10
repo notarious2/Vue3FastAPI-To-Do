@@ -1,6 +1,6 @@
 <template>
   <PostIt class="post-it">
-    <form @submit.prevent="submitLogDetails">
+    <form @submit.prevent="handleLogin">
       <h1>Login</h1>
       <div class="icon-div">
         <img src="@/assets/register/user.png" alt="user" class="user-img" />
@@ -28,12 +28,12 @@ import { ref } from "vue";
 import { useAuthStore } from "@/store/authStore.js";
 import PostIt from "@/components/layout/PostIt.vue";
 import { storeToRefs } from "pinia";
+import { event } from "vue-gtag";
 
 const authStore = useAuthStore();
 
 const openEyesURL = new URL("@/assets/register/eyes.png", import.meta.url).href;
 const closedEyesURL = new URL("@/assets/register/closed_eyes.png", import.meta.url).href;
-
 
 const username = ref("");
 const password = ref("");
@@ -42,7 +42,7 @@ const passwordType = ref("password");
 
 const { errorMessage, errorLogIn } = storeToRefs(authStore);
 
-function toggleShow() {
+const toggleShow = () => {
   showPassword.value = !showPassword.value;
   if (showPassword.value) {
     passwordType.value = "text";
@@ -50,9 +50,20 @@ function toggleShow() {
     passwordType.value = "password";
   }
 }
-function submitLogDetails() {
-  authStore.login(username.value, password.value);
+const handleLogin = async () => {
+  await authStore.login(username.value, password.value);
+  await userLoggedInGA();
+
 }
+
+const userLoggedInGA = async () => {
+  event("user-logged-in", {
+    event_category: "analytics",
+    event_label: "User",
+    value: 1,
+  });
+}
+
 </script>
 
 <style scoped>

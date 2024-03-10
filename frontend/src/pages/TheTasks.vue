@@ -90,6 +90,7 @@ import { useTaskStore } from "@/store/taskStore";
 
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+
 const taskStore = useTaskStore();
 
 const {
@@ -120,18 +121,12 @@ const calculateTaskCompletions = () => {
 
 }
 
-onMounted(async () => {
-  await taskStore.loadTasksByDate(new Date())
-  calculateTaskCompletions();
-
-});
-
 watch([currentTasks], (newValue) => {
   calculateTaskCompletions();
 }, { deep: true });
 
 // custom function to return date in DD month-long YYYY format
-function formatDate(dateInput) {
+const formatDate = (dateInput) => {
   return dateInput.toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -149,17 +144,21 @@ const handleDate = async (selectedDate) => {
 };
 
 // listen to input inside edited paragraph text
-function editText(event) {
+const editText = (event) => {
   editedText.value = event.target.innerText;
 }
 
 // make SELECTED paragraph tag editable
 // No link with backend - elements become not editable after refresh
-function toggleEditable(task) {
+const toggleEditable = (task) => {
   task.editable = !task.editable;
 }
 
+onMounted(async () => {
+  await taskStore.loadTasksByDate(new Date())
+  calculateTaskCompletions();
 
+});
 
 </script>
 

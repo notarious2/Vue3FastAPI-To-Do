@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import authHeader from "@/components/services/auth-header";
 import axios from "@/axios"
+import { trackTaskCreatedGA, trackTaskDeletedGA, trackTaskCheckedUncheckedGA, trackTaskEditedGA, trackTaskDraggedGA } from '@/gaUtils';
 
 
 export const useTaskStore = defineStore("tasks", {
@@ -43,35 +44,6 @@ export const useTaskStore = defineStore("tasks", {
 
     },
 
-    async loadTasks() {
-      this.isLoading = true;
-      try {
-        const response = await axios.get("task/", {
-          headers: authHeader(),
-        });
-        // working with response
-        const result = response.data;
-        const newArray = [];
-        result.forEach((element) => {
-          if (
-            !newArray.filter((arr) => arr["date"] === element.date).length > 0
-          ) {
-            newArray.push({
-              date: element.date,
-              tasks: [{ ...element, editable: false }],
-            });
-          } else {
-            const idx = newArray.findIndex((arr) => arr.date === element.date);
-            newArray[idx].tasks.push({ ...element, editable: false });
-          }
-        });
-        this.isLoading = false;
-        console.log("Load...");
-        return newArray;
-      } catch (err) {
-        console.log(err);
-      }
-    },
     async updateTask(updatedTask) {
       const index = this.currentTasks.findIndex(task => task.id === updatedTask.id);
       if (index !== -1) {
@@ -89,6 +61,7 @@ export const useTaskStore = defineStore("tasks", {
           { headers: authHeader() }
         );
         await this.updateTask(response.data)
+        await trackTaskCheckedUncheckedGA();
       } catch (err) {
         console.log(err);
       }
@@ -102,6 +75,7 @@ export const useTaskStore = defineStore("tasks", {
             { headers: authHeader() }
           );
           await this.updateTask(response.data)
+          await trackTaskEditedGA();
         } catch (err) {
           console.log(err);
         }
@@ -127,6 +101,7 @@ export const useTaskStore = defineStore("tasks", {
           );
           this.currentTasks.push(response.data)
           this.enteredText = "";
+          await trackTaskCreatedGA();
         } catch (err) {
           console.log(err);
         }
@@ -149,7 +124,7 @@ export const useTaskStore = defineStore("tasks", {
 
         // remove deleted task from the array
         this.currentTasks = this.currentTasks.filter(element => element.id !== task.id);
-
+        await trackTaskDeletedGA();
       } catch (err) {
         console.log(err);
       }
@@ -171,6 +146,7 @@ export const useTaskStore = defineStore("tasks", {
             headers: authHeader(),
           }
         )
+        await trackTaskDraggedGA();
       }
       catch (err) {
         console.log("Error updating priorities", err);

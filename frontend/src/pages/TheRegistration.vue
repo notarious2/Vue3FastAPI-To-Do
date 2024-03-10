@@ -137,7 +137,7 @@ async function submitRegistrationDetails() {
       username: username.value,
       password: password.value,
     };
-    authStore.register(payload);
+    await authStore.register(payload);
   }
 }
 

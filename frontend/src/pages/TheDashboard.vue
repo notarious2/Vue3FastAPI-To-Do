@@ -66,10 +66,10 @@ const slide2URL = new URL("@/assets/tasks_slide_2.webp", import.meta.url).href;
 const slide3URL = new URL("@/assets/tasks_slide_3.webp", import.meta.url).href;
 
 
-function demoAnalytics() {
+const demoAnalytics = async () => {
   event("demo-button-clicked", {
     event_category: "analytics",
-    event_label: "Demo button pressed",
+    event_label: "Demo",
     value: 1,
   });
 }
