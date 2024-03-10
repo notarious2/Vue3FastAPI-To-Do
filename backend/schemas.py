@@ -3,6 +3,10 @@ from datetime import date, datetime
 from pydantic import BaseModel
 
 
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str
+
+
 class CreateTaskSchema(BaseModel):
     text: str
     priority: int

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.database import engine
 from backend.models import metadata
-from backend.routers import authorization, task, user
+from backend.routers import authentication, task, user
 
 
 @asynccontextmanager
@@ -18,7 +18,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(user.router)
 app.include_router(task.router)
-app.include_router(authorization.router)
+app.include_router(authentication.router)
 
 app.add_middleware(
     CORSMiddleware,
