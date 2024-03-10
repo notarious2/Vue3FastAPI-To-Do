@@ -1,11 +1,10 @@
+from auth import create_access_token, create_refresh_token
+from database import get_async_session
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from auth import create_access_token, create_refresh_token
-from database import get_async_session
 from repositories.user_repo import UserRepository
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/user", tags=["user"])
 

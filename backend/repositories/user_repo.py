@@ -1,8 +1,7 @@
-from sqlalchemy import or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from models import User
 from schemas import UserCreate
+from sqlalchemy import or_, select
+from sqlalchemy.ext.asyncio import AsyncSession
 from utils import get_hashed_password, verify_hashed_password
 
 
