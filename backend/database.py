@@ -2,7 +2,7 @@ from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-DATABASE_URL = "sqlite+aiosqlite:///./todo.db"
+DATABASE_URL = "sqlite+aiosqlite:///backend/todo.db"
 
 
 engine = create_async_engine(DATABASE_URL)
