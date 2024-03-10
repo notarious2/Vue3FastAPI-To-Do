@@ -47,7 +47,7 @@ export const useAuthStore = defineStore("authentication", {
     },
     async register(payload) {
       await axios
-        .post("user/register/", payload, {
+        .post("users/register/", payload, {
           headers: {
             "Content-Type": "application/json",
           },
