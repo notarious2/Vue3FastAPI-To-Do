@@ -4,37 +4,16 @@
       <h1>Login</h1>
       <div class="icon-div">
         <img src="@/assets/register/user.png" alt="user" class="user-img" />
-        <input
-          type="text"
-          placeholder="Username or Email"
-          name="uname"
-          required
-          v-model="username"
-          @blur="authStore.clearError()"
-        />
+        <input type="text" placeholder="Username or Email" name="uname" required v-model="username"
+          @blur="authStore.clearError()" />
       </div>
       <div class="icon-div">
-        <img
-          src="@/assets/register/password.png"
-          alt="password"
-          class="password-img"
-        />
+        <img src="@/assets/register/password.png" alt="password" class="password-img" />
 
-        <input
-          id="inline-input"
-          :type="passwordType"
-          placeholder="Password"
-          name="psw"
-          required
-          v-model="password"
-          @blur="authStore.clearError()"
-        />
-        <img
-          :src="showPassword ? showUrls[0] : showUrls[1]"
-          alt="show-password"
-          class="show-password-img"
-          @click="toggleShow"
-        />
+        <input id="inline-input" :type="passwordType" placeholder="Password" name="psw" required v-model="password"
+          @blur="authStore.clearError()" />
+        <img :src="showPassword ? openEyesURL : closedEyesURL" alt="show-password" class="show-password-img"
+          @click="toggleShow" />
       </div>
       <button class="button-74" type="submit">Submit</button>
       <div id="error-message" v-if="errorLogIn">
@@ -46,15 +25,16 @@
 
 <script setup>
 import { ref } from "vue";
-import { useAuthStore } from "../components/store/userAuth.js";
-import PostIt from "../components/layout/PostIt.vue";
+import { useAuthStore } from "@/store/authStore.js";
+import PostIt from "@/components/layout/PostIt.vue";
 import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
-const showUrls = ref([
-  require("@/assets/register/eyes.png"),
-  require("@/assets/register/closed_eyes.png"),
-]);
+
+const openEyesURL = new URL("@/assets/register/eyes.png", import.meta.url).href;
+const closedEyesURL = new URL("@/assets/register/closed_eyes.png", import.meta.url).href;
+
+
 const username = ref("");
 const password = ref("");
 const showPassword = ref(false);
@@ -89,15 +69,18 @@ function submitLogDetails() {
   padding-top: 50px;
   padding-bottom: 50px;
 }
+
 .user-img {
   width: 25px;
   height: 25px;
 }
+
 .password-img {
   width: 20px;
   height: 20px;
   margin-left: 3px;
 }
+
 .show-password-img {
   width: 25px;
   height: 25px;
@@ -130,6 +113,7 @@ function submitLogDetails() {
   margin-top: 2px;
   margin-bottom: 5px;
 }
+
 .icon-div input {
   outline: none;
   border: none;

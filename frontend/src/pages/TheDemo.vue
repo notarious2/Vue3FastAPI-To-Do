@@ -9,26 +9,20 @@
     </div>
     <div class="grid-item-todo">
       <post-it>
-        <div
-          v-if="!display"
-          class="no-tasks"
-          style="display: flex; flex-direction: column"
-        >
-          <div>
-            {{ formatDate(new Date(date)) }}
-          </div>
-          <h2>No Tasks to Display</h2>
+        <div v-if="!display" class="no-tasks" style="display: flex; flex-direction: column">
+          <div class="unselectable"> {{ formatDate(new Date(date)) }} </div>
+          <h2 class="unselectable">No Tasks to Display</h2>
         </div>
 
         <div v-else>
           <h1 class="unselectable">
             {{
               formatDate(new Date(tasksSlice.date)) !== "Invalid Date"
-                ? formatDate(new Date(tasksSlice.date))
-                : ""
+              ? formatDate(new Date(tasksSlice.date))
+              : ""
             }}
           </h1>
-          <div class="flex-headers">
+          <div class="flex-headers unselectable">
             <div class="header-number">#</div>
             <div class="header-text">Description</div>
             <div class="header-edit" v-show="showButtons">Edit</div>
@@ -36,68 +30,33 @@
             <div class="header-completed">Status</div>
           </div>
         </div>
-        <draggable
-          :list="tasksSlice.tasks"
-          item-key="task_id"
-          @change="updateList"
-        >
+        <draggable :list="tasksSlice.tasks" item-key="task_id" @change="updateList">
           <template #item="{ element }">
             <div class="flexbox">
               <div class="flex-id">
                 <p>{{ element.priority }}</p>
               </div>
-              <div
-                class="flex-text"
-                :class="{ editSelectedBorder: element.editable }"
-              >
-                <p
-                  :contenteditable="element.editable"
-                  @input="editText"
-                  @blur="applyEditChanges(element)"
-                >
+              <div class="flex-text" :class="{ editSelectedBorder: element.editable }">
+                <p :contenteditable="element.editable" @input="editText" @blur="applyEditChanges(element)">
                   {{ element.text }}
                 </p>
               </div>
-              <div
-                class="flex-buttons"
-                @mouseover="showButtons = element.priority"
-                @mouseout="showButtons = null"
-              >
-                <img
-                  src="@/assets/tasks/edit.png"
-                  class="edit-img"
-                  v-show="showButtons === element.priority"
-                  @click="makeEditable(element)"
-                  :class="{ editSelected: element.editable }"
-                />
-                <img
-                  src="@/assets/tasks/delete.png"
-                  alt="delete-image"
-                  class="delete-img"
-                  @click="deleteTask(element)"
-                  v-show="showButtons === element.priority"
-                />
-                <img
-                  @click="checkUncheck(element)"
-                  :src="element.completed ? urls[0] : urls[1]"
-                  alt="status"
-                  class="status-img"
-                />
+              <div class="flex-buttons" @mouseover="showButtons = element.priority" @mouseout="showButtons = null">
+                <img src="@/assets/tasks/edit.png" class="edit-img" v-show="showButtons === element.priority"
+                  @click="makeEditable(element)" :class="{ editSelected: element.editable }" />
+                <img src="@/assets/tasks/delete.png" alt="delete-image" class="delete-img" @click="deleteTask(element)"
+                  v-show="showButtons === element.priority" />
+                <img @click="checkUncheck(element)" :src="element.completed ? uncheckedBox : checkedBox" alt="status"
+                  class="status-img" />
               </div>
             </div>
           </template>
         </draggable>
         <div>
           <form class="form-control" @submit.prevent="addTask">
-            <input
-              class="task-input"
-              @blur="clearInvalidInput"
-              @keyup="clearInvalidInput"
-              v-model="enteredText"
-              type="text"
-              aria-label="Add task"
-            />
-            <button class="button-74">add task</button>
+            <input class="task-input" @blur="clearInvalidInput" @keyup="clearInvalidInput" v-model="enteredText"
+              type="text" aria-label="Add task" />
+            <button class="button-74">Add</button>
           </form>
         </div>
         <span v-if="invalidInput" class="invalid-input">Please Enter Text</span>
@@ -106,14 +65,8 @@
 
     <div class="grid-item-calendar">
       <h1>{{ date }}</h1>
-      <Datepicker
-        inline
-        :enableTimePicker="false"
-        :monthChangeOnScroll="false"
-        v-model="date"
-        autoApply
-        @update:modelValue="handleDate"
-      />
+      <Datepicker inline :enableTimePicker="false" :monthChangeOnScroll="false" v-model="date" autoApply
+        @update:modelValue="handleDate" />
       <div v-if="totalTasks" class="task-status">
         <p>
           # Tasks: <span id="total-tasks">{{ totalTasks }}</span>
@@ -135,7 +88,7 @@
 <script setup>
 import { ref, watch, reactive } from "vue";
 import draggable from "vuedraggable";
-import PostIt from "../components/layout/PostIt.vue";
+import PostIt from "@/components/layout/PostIt.vue";
 
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -235,11 +188,10 @@ function applyEditChanges(element) {
     });
   }
 }
-// WORKING WITH IMAGES
-const urls = ref([
-  require("@/assets/tasks/checked_box.png"),
-  require("@/assets/tasks/uncheck.png"),
-]);
+
+const checkedBox = new URL("@/assets/tasks/checked_box.png", import.meta.url).href;
+const uncheckedBox = new URL("@/assets/tasks/unchecked_box.png", import.meta.url).href;
+
 
 // adding the task
 function addTask() {
@@ -296,6 +248,7 @@ function updateList() {
 h1 {
   text-align: center;
 }
+
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -351,6 +304,7 @@ h1 {
 .grid-item-todo {
   grid-area: todo;
 }
+
 .demo {
   grid-area: demo;
   margin: 5px;
@@ -362,10 +316,12 @@ h1 {
   justify-self: center;
   padding: 5px;
 }
+
 .demo p {
   display: inline;
   font-weight: bold;
 }
+
 .grid-item-calendar {
   grid-area: calendar;
   /* background: #e7e7b6; */
@@ -377,29 +333,36 @@ h1 {
     grid-template-rows: 50px 50px 1fr 1fr 50px;
     gap: 1px;
   }
+
   .header {
     grid-row: 1;
   }
+
   .demo {
     grid-row: 2;
   }
+
   .grid-item-todo {
     margin-top: 2px;
     grid-row: 3;
     grid-column: 1;
   }
+
   .grid-item-calendar {
     grid-row: 4;
     grid-column: 1;
   }
+
   .footer {
     grid-row: 5/6;
   }
+
   .form-control {
     flex-direction: column;
     align-items: center;
     margin-bottom: 60px;
   }
+
   .button-74 {
     width: 90px;
     flex-shrink: 0;
@@ -419,6 +382,7 @@ h1 {
   padding: 5px 0px;
   font-weight: bold;
 }
+
 .header-number {
   text-align: center;
   justify-content: center;
@@ -426,6 +390,7 @@ h1 {
   align-items: center;
   flex-basis: 20px;
 }
+
 .header-text {
   /* flex-grow: 1; */
   margin-right: auto;
@@ -454,11 +419,13 @@ h1 {
   align-items: center;
   margin-top: 3px;
 }
+
 .flex-id p {
   font-weight: bold;
   margin-block-start: 0px;
   margin-block-end: 0px;
 }
+
 .flex-text {
   /* background: lightgray; */
   text-align: justify;
@@ -466,6 +433,7 @@ h1 {
   flex: 1;
   line-height: 12pt;
 }
+
 p {
   margin-block-start: 10px;
   margin-block-end: 0px;
@@ -477,6 +445,7 @@ p {
   border: 0.5px solid orange;
   cursor: auto;
 }
+
 .flex-buttons {
   /* background: lightyellow; */
   flex-basis: 70px;
@@ -492,18 +461,21 @@ p {
   height: 30px;
   margin-right: -5px;
 }
+
 .editSelected {
   transform: rotate(19deg);
 }
+
 /* DELETE */
 .delete-img {
   width: 30px;
   height: 30px;
 }
+
 .delete-img:hover {
-  filter: invert(39%) sepia(5%) saturate(4834%) hue-rotate(314deg)
-    brightness(91%) contrast(100%);
+  filter: invert(39%) sepia(5%) saturate(4834%) hue-rotate(314deg) brightness(91%) contrast(100%);
 }
+
 /* CHECKBOX */
 .status-img {
   width: 30px;
@@ -548,18 +520,22 @@ p {
   margin-right: 50px;
   font-weight: bold;
 }
+
 .task-status p {
   display: inline-block;
   margin-right: 20px;
 }
+
 #total-tasks {
   color: black;
   font-weight: bold;
 }
+
 #complete-tasks {
   color: #479d16;
   font-weight: bold;
 }
+
 #uncomplete-tasks {
   color: #841460;
   font-weight: bold;

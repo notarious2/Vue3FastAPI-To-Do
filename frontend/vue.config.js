@@ -1,4 +1,7 @@
 module.exports = {
+  devServer: {
+    proxy: 'https://localhost:8888'
+  },
   publicPath: "",
   productionSourceMap: false, // to hide source code
   pluginOptions: {

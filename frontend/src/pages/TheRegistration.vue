@@ -5,102 +5,42 @@
         <h1>Register</h1>
         <div class="icon-div" :class="{ isError: errorName }">
           <img src="@/assets/register/user.png" alt="user" class="user-img" />
-          <input
-            type="text"
-            placeholder="Enter name"
-            v-model="name"
-            @blur="errorName = ''"
-            @keypress="errorName = ''"
-          />
+          <input type="text" placeholder="Enter name" v-model="name" @blur="errorName = ''" @keypress="errorName = ''" />
         </div>
         <span v-if="errorName" class="error">{{ errorName }}<br /></span>
 
         <div class="icon-div" :class="{ isError: errorEmail }">
-          <img
-            src="@/assets/register/email.png"
-            alt="email"
-            class="email-img"
-          />
-          <input
-            type="text"
-            placeholder="Enter email"
-            v-model="email"
-            @blur="errorEmail = ''"
-            @keypress="errorEmail = ''"
-          />
+          <img src="@/assets/register/email.png" alt="email" class="email-img" />
+          <input type="text" placeholder="Enter email" v-model="email" @blur="errorEmail = ''"
+            @keypress="errorEmail = ''" />
         </div>
         <span v-if="errorEmail" class="error">{{ errorEmail }}<br /></span>
         <div class="icon-div" :class="{ isError: errorUsername }">
-          <img
-            src="@/assets/register/username.png"
-            alt="username"
-            class="username-img"
-          />
-          <input
-            type="text"
-            placeholder="Enter username"
-            v-model="username"
-            @blur="errorUsername = ''"
-            @keypress="errorUsername = ''"
-          />
+          <img src="@/assets/register/username.png" alt="username" class="username-img" />
+          <input type="text" placeholder="Enter username" v-model="username" @blur="errorUsername = ''"
+            @keypress="errorUsername = ''" />
         </div>
-        <span v-if="errorUsername" class="error"
-          >{{ errorUsername }}<br
-        /></span>
+        <span v-if="errorUsername" class="error">{{ errorUsername }}<br /></span>
 
         <div class="icon-div" :class="{ isError: errorPassword }">
-          <img
-            src="@/assets/register/password.png"
-            alt="password"
-            class="password-img"
-          />
-          <input
-            id="inline-input"
-            :type="passwordType"
-            placeholder="Enter password"
-            v-model="password"
-            @blur="errorPassword = ''"
-            @keypress="errorPassword = ''"
-          />
-          <img
-            :src="showPassword ? showUrls[0] : showUrls[1]"
-            alt="show-password"
-            class="show-password-img"
-            @click="toggleShow"
-          />
+          <img src="@/assets/register/password.png" alt="password" class="password-img" />
+          <input id="inline-input" :type="passwordType" placeholder="Enter password" v-model="password"
+            @blur="errorPassword = ''" @keypress="errorPassword = ''" />
+          <img :src="showPassword ? openEyesURL : closedEyesURL" alt="show-password" class="show-password-img"
+            @click="toggleShow" />
         </div>
         <div class="icon-div" :class="{ isError: errorPassword }">
-          <img
-            alt="password-verification"
-            class="verification-img"
-            :src="passwordsMatch ? passwordUrls[1] : passwordUrls[0]"
-            :class="
-              passwordsMatch
-                ? 'password-is-confirmed'
-                : 'password-not-confirmed'
-            "
-          />
-          <input
-            :type="passwordType"
-            placeholder="Re-enter password"
-            v-model="passwordConfirmation"
-            @blur="errorPassword = ''"
-            @keypress="errorPassword = ''"
-          />
+          <img alt="password-verification" class="verification-img"
+            :src="passwordsMatch ? lockedPasswordURL : unlockedPasswordURL" :class="passwordsMatch
+              ? 'password-is-confirmed'
+              : 'password-not-confirmed'
+              " />
+          <input :type="passwordType" placeholder="Re-enter password" v-model="passwordConfirmation"
+            @blur="errorPassword = ''" @keypress="errorPassword = ''" />
         </div>
-        <span
-          v-if="errorPassword"
-          class="error"
-          style="margin-top: 5px; display: block"
-          >{{ errorPassword }}</span
-        >
-        <span
-          v-if="errorRegister"
-          class="error"
-          style="margin-top: 5px; display: block"
-        >
-          {{ errorRegister }}</span
-        >
+        <span v-if="errorPassword" class="error" style="margin-top: 5px; display: block">{{ errorPassword }}</span>
+        <span v-if="errorRegister" class="error" style="margin-top: 5px; display: block">
+          {{ errorRegister }}</span>
         <span v-else><br /></span>
         <button class="button-74" type="submit">Submit</button>
       </div>
@@ -110,8 +50,8 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import { useAuthStore } from "../components/store/userAuth.js";
-import PostIt from "../components/layout/PostIt.vue";
+import { useAuthStore } from "@/store/authStore.js";
+import PostIt from "@/components/layout/PostIt.vue";
 import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
@@ -134,14 +74,11 @@ const showPassword = ref(false);
 const passwordType = ref("password");
 const passwordsMatch = ref(false);
 
-const passwordUrls = ref([
-  require("@/assets/register/locked.png"),
-  require("@/assets/register/unlocked.png"),
-]);
-const showUrls = ref([
-  require("@/assets/register/eyes.png"),
-  require("@/assets/register/closed_eyes.png"),
-]);
+const lockedPasswordURL = new URL("@/assets/register/locked.png", import.meta.url).href;
+const unlockedPasswordURL = new URL("@/assets/register/unlocked.png", import.meta.url).href;
+
+const openEyesURL = new URL("@/assets/register/eyes.png", import.meta.url).href;
+const closedEyesURL = new URL("@/assets/register/closed_eyes.png", import.meta.url).href;
 
 function toggleShow() {
   showPassword.value = !showPassword.value;
@@ -229,12 +166,14 @@ watch([password, passwordConfirmation], () => {
   width: 25px;
   height: 25px;
 }
+
 .password-img,
 .verification-img {
   width: 20px;
   height: 20px;
   margin-left: 2px;
 }
+
 .show-password-img {
   width: 25px;
   height: 25px;
@@ -242,12 +181,11 @@ watch([password, passwordConfirmation], () => {
 }
 
 .password-is-confirmed {
-  filter: invert(50%) sepia(31%) saturate(1012%) hue-rotate(60deg)
-    brightness(98%) contrast(87%);
+  filter: invert(50%) sepia(31%) saturate(1012%) hue-rotate(60deg) brightness(98%) contrast(87%);
 }
+
 .password-not-confirmed {
-  filter: invert(14%) sepia(67%) saturate(5511%) hue-rotate(356deg)
-    brightness(86%) contrast(98%);
+  filter: invert(14%) sepia(67%) saturate(5511%) hue-rotate(356deg) brightness(86%) contrast(98%);
 }
 
 #icon {
@@ -269,6 +207,7 @@ watch([password, passwordConfirmation], () => {
   overflow: hidden;
   margin-top: 2px;
 }
+
 .icon-div input {
   outline: none;
   border: none;
@@ -293,6 +232,7 @@ watch([password, passwordConfirmation], () => {
 .error {
   color: red;
 }
+
 .isError {
   border: 0.5px solid red;
 }

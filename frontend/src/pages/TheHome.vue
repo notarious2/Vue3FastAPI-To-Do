@@ -12,7 +12,7 @@
 // import TheTasks from "./TheTasks.vue";
 import { defineAsyncComponent } from "vue";
 
-import { useAuthStore } from "../components/store/userAuth";
+import { useAuthStore } from "@/store/authStore";
 
 const TheDashboard = defineAsyncComponent(() => import("./TheDashboard.vue"));
 const TheTasks = defineAsyncComponent(() => import("./TheTasks.vue"));

@@ -1,24 +1,15 @@
 <template>
   <header>
-    <img src="../../assets/note.png" alt="" />
+    <img src="@/assets/note.png" alt="" />
     <nav>
       <h1 class="app-name">
         <router-link :to="{ name: 'Home' }"> to-do app </router-link>
       </h1>
     </nav>
-    <button
-      v-if="!loggedIn"
-      @click="router.push({ name: 'Registration' })"
-      class="button-74"
-    >
+    <button v-if="!loggedIn" @click="router.push({ name: 'Registration' })" class="button-74">
       Register
     </button>
-    <button
-      v-if="!loggedIn"
-      @click="router.push({ name: 'Authorization' })"
-      class="button-74"
-      id="login-button"
-    >
+    <button v-if="!loggedIn" @click="router.push({ name: 'Authorization' })" class="button-74" id="login-button">
       Log In
     </button>
     <button v-else class="button-74" @click="authStore.logout()">Logout</button>
@@ -26,7 +17,7 @@
 </template>
 
 <script setup>
-import { useAuthStore } from "../store/userAuth.js";
+import { useAuthStore } from "@/store/authStore.js";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 
@@ -55,6 +46,7 @@ header {
   margin-top: 25px;
   align-items: center;
 }
+
 .greetings span {
   color: #127b14;
 }
@@ -95,6 +87,7 @@ header a {
   flex-basis: 90px;
   flex-shrink: 0;
 }
+
 header img {
   width: 30px;
   margin-left: 10px;

@@ -3,55 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "sitemap": "vue-cli-service sitemap"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
     "@vuepic/vue-datepicker": "^3.5.3",
     "axios": "^0.27.2",
-    "core-js": "^3.8.3",
-    "express": "^4.18.2",
     "pinia": "^2.0.22",
     "serve-static": "^1.15.0",
     "swiper": "^8.4.4",
     "vue": "^3.2.13",
     "vue-gtag": "^2.0.1",
     "vue-router": "^4.1.5",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "vuetify": "^3.5.8"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "vite-plugin-vuetify": "^2.0.2",
+    "vite": "^5.1.5",
     "vue-cli-plugin-sitemap": "~2.3.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ],
-  "engines": {
-    "node": "16.16.0"
   }
 }

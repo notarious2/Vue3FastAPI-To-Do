@@ -9,56 +9,26 @@
           <p>
             <strong> Try Demo Playground. No registration required! </strong>
           </p>
-          <button
-            @click="
-              router.push({ name: 'Demo' });
-              demoAnalytics();
-            "
-            class="button-74"
-          >
+          <button @click="
+            router.push({ name: 'Demo' });
+          demoAnalytics();
+          " class="button-74">
             Demo
           </button>
         </div>
       </post-it>
     </div>
     <div class="swip">
-      <swiper
-        :slidesPerView="1"
-        :spaceBetween="30"
-        :loop="true"
-        :lazy="true"
-        :centeredSlides="true"
-        :pagination="{
-          clickable: true,
-        }"
-        :autoplay="{
-          delay: 5000,
-          // disableOnInteraction: false,
-        }"
-        :navigation="true"
-        :modules="modules"
-      >
-        <swiper-slide
-          ><img
-            :src="require('../assets/tasks_slide_1.webp')"
-            alt="slide 1"
-            class="slide-1 swiper-lazy"
-            rel="preload"
-        /></swiper-slide>
-        <swiper-slide
-          ><img
-            :src="require('../assets/tasks_slide_2.webp')"
-            alt="slide 2"
-            class="slide-2 swiper-lazy"
-            rel="preload"
-        /></swiper-slide>
-        <swiper-slide
-          ><img
-            :src="require('../assets/tasks_slide_3.webp')"
-            alt="slide 3"
-            class="slide-3 swiper-lazy"
-            rel="preload" /></swiper-slide
-      ></swiper>
+      <swiper :slidesPerView="1" :spaceBetween="30" :loop="true" :lazy="true" :centeredSlides="true" :pagination="{
+        clickable: true,
+      }" :autoplay="{
+  delay: 5000,
+  // disableOnInteraction: false,
+}" :navigation="true" :modules="modules">
+        <swiper-slide><img :src="slide1URL" alt="slide 1" class="slide-1 swiper-lazy" rel="preload" /></swiper-slide>
+        <swiper-slide><img :src="slide2URL" alt="slide 2" class="slide-2 swiper-lazy" rel="preload" /></swiper-slide>
+        <swiper-slide><img :src="slide3URL" alt="slide 3" class="slide-3 swiper-lazy" rel="preload" /></swiper-slide>
+      </swiper>
     </div>
   </main>
   <the-footer class="footer"></the-footer>
@@ -67,7 +37,7 @@
 <script setup>
 import { ref } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import PostIt from "../components/layout/PostIt.vue";
+import PostIt from "@/components/layout/PostIt.vue";
 import { event } from "vue-gtag";
 
 import SwiperCore, {
@@ -91,6 +61,11 @@ SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, Autoplay, Lazy]);
 const modules = ref([Navigation, Pagination, Scrollbar, A11y, Autoplay, Lazy]);
 const router = useRouter();
 
+const slide1URL = new URL("@/assets/tasks_slide_1.webp", import.meta.url).href;
+const slide2URL = new URL("@/assets/tasks_slide_2.webp", import.meta.url).href;
+const slide3URL = new URL("@/assets/tasks_slide_3.webp", import.meta.url).href;
+
+
 function demoAnalytics() {
   event("demo-button-clicked", {
     event_category: "analytics",
@@ -104,24 +79,29 @@ function demoAnalytics() {
 * {
   font-family: "Kalam", cursive;
 }
+
 .slide-1 {
   width: 90%;
   height: 50%;
 }
+
 .slide-2 {
   width: 70%;
   height: 70%;
 }
+
 .slide-3 {
   width: 50%;
   height: 50%;
   margin-bottom: 15px;
 }
+
 .linksbox {
   display: flex;
   justify-content: center;
   margin-bottom: 5px;
 }
+
 #demo-link {
   display: flex;
   width: 60%;
@@ -133,6 +113,7 @@ function demoAnalytics() {
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
 }
+
 #demo-link:after {
   content: "";
   border-color: #bbe1f5;
@@ -142,6 +123,7 @@ function demoAnalytics() {
   right: 1em;
   border-width: 0.5em;
 }
+
 #demo-link:before {
   border-color: #53b2e5 transparent;
   bottom: -1em;
@@ -153,14 +135,17 @@ function demoAnalytics() {
   flex-direction: column;
   align-items: center;
 }
+
 main {
   display: flex;
   flex-direction: column;
   min-height: 90vh;
 }
+
 .footer {
   margin-top: auto;
 }
+
 .button-74 {
   background-color: #2179b8;
   border: 2px solid transparent;
@@ -180,6 +165,7 @@ main {
   width: 120px;
   margin-bottom: 10px;
 }
+
 .button-74:hover {
   background-color: #18458e;
 }

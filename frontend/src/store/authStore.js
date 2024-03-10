@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import axios from "axios";
-import router from "../../router.js";
+import axios from "@/axios";
+import router from "@/router.js";
 
 export const useAuthStore = defineStore("authentication", {
   state: () => ({
@@ -73,16 +73,17 @@ export const useAuthStore = defineStore("authentication", {
     async refreshToken() {
       var user = localStorage.getItem("user");
       user = JSON.parse(user);
-      const refresh = user["refresh"];
+      const refresh = user["refresh_token"];
       localStorage.removeItem("user");
 
-      const refreshToken = await axios.post("user/jwt/refresh/", {
-        refresh: refresh,
+      const response = await axios.post("user/jwt/refresh/", {
+        refresh_token: refresh,
       });
       // reassign user in local storage
-      user["access"] = refreshToken.data.access;
+      user["access_token"] = response.data.access_token;
+      user["refresh_token"] = response.data.access_token;
       localStorage.setItem("user", JSON.stringify(user));
-      return refreshToken.data.access;
+      return response.data.access_token;
     },
 
     clearError() {

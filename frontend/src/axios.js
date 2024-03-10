@@ -1,31 +1,30 @@
 import axios from "axios";
-import { useAuthStore } from "../src/components/store/userAuth.js";
+import { useAuthStore } from "@/store/authStore.js";
 
-axios.defaults.baseURL = process.env.VUE_APP_BACKEND_URL;
 // axios interceptor for specific URL - instance
+const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_ENDPOINT,
+});
+
 
 //response interceptor
-axios.interceptors.response.use(
-  (res) => {
-    return res;
+axiosInstance.interceptors.response.use(
+  // If the response is successful, just return it
+  (response) => {
+    return response;
   },
-  async function (error) {
-    console.log("Error", error);
+  async (error) => {
     const originalRequest = error.config;
     // don't refresh if either access or refresh token is invalid
     if (
-      error.response.status === 401 &&
-      (error.response.data.detail === "Invalid Access Token" ||
-        error.response.data.detail === "Invalid Refresh Token")
+      error.response && originalRequest.url.includes("refresh")
     ) {
       const authStore = useAuthStore();
       authStore.logout();
     }
     // refresh token if it is expired
     else if (
-      error.response.status === 401 &&
-      error.response.data.detail === "Token expired" &&
-      error.request.responseURL.includes(axios.defaults.baseURL + "/task") &&
+      error.response && error.response.status === 401 &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
@@ -42,3 +41,4 @@ axios.interceptors.response.use(
     }
   }
 );
+export default axiosInstance;
