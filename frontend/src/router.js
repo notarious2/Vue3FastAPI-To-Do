@@ -30,6 +30,10 @@ const routes = [
     name: "Demo",
     component: TheDemo,
   },
+  {
+    path: "/callback/",
+    component: () => import("@/pages/GoogleCallback.vue"),
+  },
   { path: "/:notFound(.*)", component: NotFound },
 ];
 

@@ -1,12 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "@/axios";
 import router from "@/router.js";
-import { trackUserLoggedInGA, trackUserRegistrationGA } from '@/gaUtils';
+import { trackUserLoggedInGA, trackUserRegistrationGA, trackUserLoggedInWithGoogleGA } from '@/gaUtils';
 
 
 export const useAuthStore = defineStore("authentication", {
   state: () => ({
-    token: "",
     // initialize state from local storage to enable user to stay logged in
     // user: JSON.parse(localStorage.getItem("user")),
     errorLogIn: false,
@@ -32,7 +31,6 @@ export const useAuthStore = defineStore("authentication", {
           // store user details and jwt in local storage to keep user logged in between page refreshes
           localStorage.setItem("user", JSON.stringify(response.data));
           // update pinia state
-          this.token = response.data["access"];
           this.isAuthenticated = true;
           router.push({ name: "Home" });
           trackUserLoggedInGA();
@@ -48,6 +46,42 @@ export const useAuthStore = defineStore("authentication", {
             this.errorMessage = "Incorrect username/email or password";
           }
         });
+    },
+    googleAuthenticate() {
+      let clientID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+      let authEndpoint = 'https://accounts.google.com/o/oauth2/auth'
+      let scope = 'openid profile email'
+      let responseType = 'token'
+      let redirectURI = `${window.location.origin}/callback`
+
+      const authUrl = `${authEndpoint}?client_id=${clientID}&redirect_uri=${redirectURI}&scope=${scope}&response_type=${responseType}`;
+      // Calculate the center position
+      const left = window.screen.width / 2 - 300; // Adjust 300 to half of the pop-up window width
+      const top = window.screen.height / 2 - 300; // Adjust 300 to half of the pop-up window height
+
+      // Open the URL in a new pop-up window
+      const popupWindow = window.open(authUrl, "_blank", `width=600,height=600,left=${left},top=${top}`);
+
+      // Optional: Focus on the new window
+      if (popupWindow) {
+        popupWindow.focus();
+      }
+    },
+    async loginWithGoogle(accessToken) {
+      try {
+        const googleLoginURL = "/user/google-login/";
+        const response = await axios.post(googleLoginURL, {
+          access_token: accessToken,
+        });
+
+        localStorage.setItem("user", JSON.stringify(response.data));
+        this.isAuthenticated = true;
+        trackUserLoggedInWithGoogleGA();
+        return true;
+      } catch (error) {
+        console.log("Error while authenticating with Google", error);
+        throw error;
+      }
     },
     async register(payload) {
       await axios
@@ -69,7 +103,6 @@ export const useAuthStore = defineStore("authentication", {
         });
     },
     logout() {
-      this.token = null;
       localStorage.removeItem("user");
       this.isAuthenticated = false;
       location.reload();

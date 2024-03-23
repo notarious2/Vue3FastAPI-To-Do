@@ -1,12 +1,13 @@
 <template>
   <PostIt class="post-it">
     <form @submit.prevent="handleLogin">
-      <h1>Login</h1>
+      <h2>Login to Continue</h2>
       <div class="icon-div">
         <img src="@/assets/register/user.png" alt="user" class="user-img" />
         <input type="text" placeholder="Username or Email" name="uname" required v-model="username"
           @blur="authStore.clearError()" />
       </div>
+
       <div class="icon-div">
         <img src="@/assets/register/password.png" alt="password" class="password-img" />
 
@@ -15,10 +16,24 @@
         <img :src="showPassword ? openEyesURL : closedEyesURL" alt="show-password" class="show-password-img"
           @click="toggleShow" />
       </div>
-      <button class="button-74" type="submit">Submit</button>
+      <button class="button-74" type="submit">Login</button>
       <div id="error-message" v-if="errorLogIn">
         {{ errorMessage }}
       </div>
+
+
+      <div style="margin-top: 15px;">
+        Don't have an account yet?
+        <a href="/register/">Register</a>
+      </div>
+
+      <p class="decorated mt-5" style="user-select: none"><span>or</span></p>
+
+      <div class="icon-div" id="google" @click="authStore.googleAuthenticate()">
+        <img src="@/assets/register/google.png" alt="password" class="password-img" />
+        <input id="inline-input" placeholder="Continue with Google" readonly style="cursor: pointer;" />
+      </div>
+
     </form>
   </PostIt>
 </template>
@@ -108,6 +123,11 @@ const userLoggedInGA = async () => {
   margin-right: 10px;
 }
 
+#google:hover {
+  background-color: rgb(238, 238, 172);
+}
+
+
 .fa-icons {
   font-size: 18px;
   margin-left: 5px;
@@ -173,5 +193,35 @@ const userLoggedInGA = async () => {
     min-width: 120px;
     padding: 0 25px;
   }
+}
+
+
+/* headlines with lines */
+.decorated {
+  overflow: hidden;
+  text-align: center;
+}
+
+.decorated>span {
+  position: relative;
+  display: inline-block;
+}
+
+.decorated>span:before,
+.decorated>span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  border-bottom: 1px solid;
+  width: 100vw;
+  margin: 0 20px;
+}
+
+.decorated>span:before {
+  right: 100%;
+}
+
+.decorated>span:after {
+  left: 100%;
 }
 </style>

@@ -48,6 +48,14 @@ export const trackUserLoggedInGA = async () => {
     });
 };
 
+export const trackUserLoggedInWithGoogleGA = async () => {
+    event("user-google-log-in", {
+        event_category: "analytics",
+        event_label: "User",
+        value: 1,
+    });
+};
+
 export const trackUserRegistrationGA = async () => {
     event("user-registered", {
         event_category: "analytics",

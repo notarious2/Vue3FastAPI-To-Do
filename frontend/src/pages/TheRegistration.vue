@@ -2,7 +2,7 @@
   <PostIt class="post-it">
     <form @submit.prevent="submitRegistrationDetails">
       <div class="container">
-        <h1>Register</h1>
+        <h2>Create an Account</h2>
         <div class="icon-div" :class="{ isError: errorName }">
           <img src="@/assets/register/user.png" alt="user" class="user-img" />
           <input type="text" placeholder="Enter name" v-model="name" @blur="errorName = ''" @keypress="errorName = ''" />
@@ -42,7 +42,20 @@
         <span v-if="errorRegister" class="error" style="margin-top: 5px; display: block">
           {{ errorRegister }}</span>
         <span v-else><br /></span>
-        <button class="button-74" type="submit">Submit</button>
+        <button class="button-74" type="submit">Register</button>
+
+
+        <div style="margin-top: 15px;">
+          Already have an account?
+          <a href="/login/">Login</a>
+        </div>
+
+        <p class="decorated mt-5" style="user-select: none"><span>or</span></p>
+
+        <div class="icon-div" id="google" @click="authStore.googleAuthenticate()">
+          <img src="@/assets/register/google.png" alt="password" class="password-img" />
+          <input id="inline-input" placeholder="Continue with Google" readonly style="cursor: pointer;" />
+        </div>
       </div>
     </form>
   </PostIt>
@@ -229,6 +242,11 @@ watch([password, passwordConfirmation], () => {
   transform: translateX(-50%);
 }
 
+#google:hover {
+  background-color: rgb(238, 238, 172);
+}
+
+
 .error {
   color: red;
 }
@@ -271,5 +289,34 @@ watch([password, passwordConfirmation], () => {
     min-width: 120px;
     padding: 0 25px;
   }
+}
+
+/* headlines with lines */
+.decorated {
+  overflow: hidden;
+  text-align: center;
+}
+
+.decorated>span {
+  position: relative;
+  display: inline-block;
+}
+
+.decorated>span:before,
+.decorated>span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  border-bottom: 1px solid;
+  width: 100vw;
+  margin: 0 20px;
+}
+
+.decorated>span:before {
+  right: 100%;
+}
+
+.decorated>span:after {
+  left: 100%;
 }
 </style>
