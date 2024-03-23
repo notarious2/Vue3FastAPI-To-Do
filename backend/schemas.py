@@ -60,3 +60,7 @@ class UserDisplay(BaseModel):
     username: str
     email: str
     created_at: datetime
+
+
+class GoogleLoginSchema(BaseModel):
+    access_token: str

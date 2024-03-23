@@ -1,3 +1,9 @@
+import secrets
+import string
+from datetime import datetime, timezone
+
+from fastapi import status
+from httpx import AsyncClient, Response
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -59,3 +65,42 @@ class UserRepository:
         await self.db_session.delete(user)
         await self.db_session.commit()
         return True
+
+    async def create_user_from_google_credentials(self, **kwargs) -> User:
+        # generate random password for google user and hash it
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        password = "".join(secrets.choice(alphabet) for _ in range(20))
+        hashed_password = get_hashed_password(password)
+
+        user = User(
+            username=kwargs.get("email"),  # Using Google email as username
+            email=kwargs.get("email"),
+            name=f"{kwargs.get('given_name')} {kwargs.get('family_name')}",
+            password=hashed_password,
+        )
+        self.db_session.add(user)
+        await self.db_session.commit()
+
+        return user
+
+    # https://stackoverflow.com/questions/16501895/how-do-i-get-user-profile-using-google-access-token
+    # Verify the auth token received by client after google signin
+    async def verify_google_token(self, google_access_token: str) -> dict[str, str] | None:
+        google_url = f"https://www.googleapis.com/oauth2/v3/userinfo?access_token={google_access_token}"
+
+        async with AsyncClient() as client:
+            response: Response = await client.get(google_url)
+            if response.status_code == status.HTTP_200_OK:
+                user_info: dict = response.json()
+            else:
+                return None
+
+        # check that user_info contains email, given and family name
+        if {"email", "given_name", "family_name"}.issubset(set(user_info)):
+            return user_info
+
+        return None
+
+    async def update_user_last_login(self, user: User) -> None:
+        user.last_login = datetime.now(timezone.utc)
+        await self.db_session.commit()
