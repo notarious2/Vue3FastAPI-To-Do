@@ -119,7 +119,7 @@ export const useAuthStore = defineStore("authentication", {
       });
       // reassign user in local storage
       user["access_token"] = response.data.access_token;
-      user["refresh_token"] = response.data.access_token;
+      user["refresh_token"] = response.data.refresh_token;
       localStorage.setItem("user", JSON.stringify(user));
       return response.data.access_token;
     },
