@@ -15,6 +15,9 @@
         <p>Latest <strong>Vue 3 Composition API</strong> Script Setup</p>
     </li>
     <li>
+        <p>Google oauth2 Authentication (access token retrieval) </p>
+    </li>
+    <li>
         <p><strong>Drag and drop</strong> functionality to change priority of tasks thanks to <a href="https://github.com/SortableJS/vue.draggable.next">Vue Draggable Next</a></p>
     </li>
     <li>
@@ -39,6 +42,9 @@
     </li>
     <li>
         <p>Async SQLite with latest Async SQLAlchemy ORM</p>
+    </li>
+    <li>
+        <p>Google oauth2 Authentication (access token verification, user creation) </p>
     </li>
     <li>
         <p>JWT refresh and access tokens for Authentication</p>
