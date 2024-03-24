@@ -24,7 +24,7 @@
 
       <div style="margin-top: 15px;">
         Don't have an account yet?
-        <a href="/#/register/">Register</a>
+        <router-link to="/register">Register</router-link>
       </div>
 
       <p class="decorated mt-5" style="user-select: none"><span>or</span></p>
