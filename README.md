@@ -41,7 +41,7 @@
         <p>FastAPI with Pydantic 2</p>
     </li>
     <li>
-        <p>Async SQLite with latest Async SQLAlchemy ORM</p>
+        <p>Async Postgres (<strong>asyncpg</strong>) with latest Async SQLAlchemy ORM</p>
     </li>
     <li>
         <p>Google oauth2 Authentication (access token verification, user creation) </p>
