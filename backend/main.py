@@ -1,8 +1,7 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
 
 from backend.database import engine
 from backend.models import metadata
@@ -28,21 +27,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/login", include_in_schema=False)
-async def login_page(request: Request):
-    return RedirectResponse(url="/", status_code=302)
-
-
-@app.get("/register", include_in_schema=False)
-async def register_page(request: Request):
-    return RedirectResponse(url="/", status_code=302)
-
-
-@app.get("/callback", include_in_schema=False)
-async def callback_page(request: Request):
-    return RedirectResponse(url="/", status_code=302)
 
 
 async def create_tables() -> None:
