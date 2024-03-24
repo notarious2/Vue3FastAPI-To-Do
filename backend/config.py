@@ -17,6 +17,15 @@ class GlobalSettings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 4
     NEW_REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 2
 
+    # Database configuration
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "postgres"
+    DB_HOST: str = "localhost"
+    DB_PORT: str = "5432"
+    DB_NAME: str = "postgres"
+    # specify single database url
+    DATABASE_URL: str | None = None
+
 
 class TestSettings(GlobalSettings):
     pass
