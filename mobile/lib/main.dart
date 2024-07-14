@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/models.dart';
 import 'package:mobile/sticky_note_container.dart';
+import 'package:mobile/tasks_provider.dart';
 
 void main() {
   // Ensure the app only runs in portrait mode
@@ -9,7 +12,7 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) {
-    runApp(MyApp());
+    runApp(const ProviderScope(child: MyApp()));
   });
 }
 
@@ -22,23 +25,22 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -71,7 +73,14 @@ class _MyHomePageState extends State<MyHomePage> {
             FloatingActionButton(
               backgroundColor: Colors.orangeAccent,
               onPressed: () {
-                print("Task added");
+                final task = Task(
+                    text: _controller.text,
+                    completed: false,
+                    priority: 1,
+                    createdAt: '2024-07-14');
+                ref
+                    .read(AsyncTaskProvider('2024-07-14').notifier)
+                    .addTask(task);
               },
               tooltip: 'Add task',
               child: const Icon(Icons.add),

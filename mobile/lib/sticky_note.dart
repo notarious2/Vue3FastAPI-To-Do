@@ -1,36 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/models.dart';
 import 'package:mobile/sticky_note_painter.dart';
+import 'package:mobile/tasks_provider.dart';
 
-class StickyNote extends StatefulWidget {
+class StickyNote extends ConsumerWidget {
   const StickyNote({
     super.key,
     required this.items,
     this.color = const Color(0xffffff00),
   });
 
-  final List<String> items;
+  final List<Task> items;
   final Color color;
 
   @override
-  _StickyNoteState createState() => _StickyNoteState();
-}
-
-class _StickyNoteState extends State<StickyNote> {
-  late List<String> items;
-  bool isChecked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    items = widget.items;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Transform.rotate(
       angle: 0,
       child: CustomPaint(
-        painter: StickyNotePainter(color: widget.color),
+        painter: StickyNotePainter(color: color),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
@@ -42,45 +31,71 @@ class _StickyNoteState extends State<StickyNote> {
                 return Column(
                   children: [
                     Dismissible(
-                      key: Key('$item-$index'),
+                      key: Key('${item.id}'),
                       onDismissed: (direction) {
-                        setState(() {
-                          items.removeAt(index);
-                        });
+                        ref
+                            .read(AsyncTaskProvider('2024-07-14').notifier)
+                            .removeTask(item.id!);
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('$item deleted')),
+                          SnackBar(content: Text('${item.text} deleted')),
                         );
                       },
-                      background:
-                          Container(color: Color.fromARGB(255, 210, 118, 203)),
+                      background: Container(
+                        color: const Color.fromARGB(255, 210, 118, 203),
+                      ),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '${index + 1}. ',
                             style: const TextStyle(fontSize: 18),
                           ),
-                          Text(
-                            item,
-                            style: const TextStyle(fontSize: 18),
+                          Expanded(
+                            child: Text(
+                              item.text,
+                              style: const TextStyle(fontSize: 18),
+                              overflow: TextOverflow.visible,
+                            ),
                           ),
                           const Spacer(),
-                          Icon(Icons.edit),
-                          Icon(
-                            Icons.delete,
-                            color: Colors.pink,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.edit),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  ref
+                                      .read(AsyncTaskProvider('2024-07-14')
+                                          .notifier)
+                                      .removeTask(item.id!);
+                                },
+                              ),
+                              Checkbox(
+                                value: item.completed,
+                                checkColor: Colors.black,
+                                fillColor: WidgetStateProperty.resolveWith(
+                                  (states) {
+                                    if (!states
+                                        .contains(WidgetState.selected)) {
+                                      return const Color(0xffffff00);
+                                    }
+                                    return Colors.transparent;
+                                  },
+                                ),
+                                onChanged: (bool? value) {
+                                  ref
+                                      .read(AsyncTaskProvider('2024-07-14')
+                                          .notifier)
+                                      .toggleTaskComplete(item.id!, value!);
+                                },
+                              ),
+                            ],
                           ),
-                          Checkbox(
-                              value: isChecked,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              })
                         ],
                       ),
                     ),
-                    // const SizedBox(height: 3), // Add margin here
                   ],
                 );
               }).toList(),
