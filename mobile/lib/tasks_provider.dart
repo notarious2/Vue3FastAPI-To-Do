@@ -55,6 +55,8 @@ class AsyncTask extends _$AsyncTask {
   }
 
   Future<void> addTask(Task task) async {
+    // get length of current list of tasks
+    // final int priority = state.asData!.value.length + 1;
     // Set the state to loading
     state = const AsyncValue.loading();
     // Add the new todo and reload the todo list from the remote repository
@@ -83,9 +85,13 @@ class AsyncTask extends _$AsyncTask {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final db = await _getDatabase();
-      await db.update('task', {'completed': newCompleted},
+      await db.update('task', {'completed': newCompleted == true ? 1 : 0},
           where: 'id = ?', whereArgs: [taskID]);
       return _fetchTasks(createdAt: '2024-07-14');
     });
+  }
+
+  Future<void> getTasksCount() async {
+    /// provide code here
   }
 }

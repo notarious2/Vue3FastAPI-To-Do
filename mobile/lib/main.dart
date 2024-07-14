@@ -43,6 +43,16 @@ class MyHomePage extends ConsumerStatefulWidget {
 class _MyHomePageState extends ConsumerState<MyHomePage> {
   final TextEditingController _controller = TextEditingController();
 
+  void submitTask() {
+    final task = Task(
+        text: _controller.text,
+        completed: false,
+        priority: 1,
+        createdAt: '2024-07-14');
+    ref.read(AsyncTaskProvider('2024-07-14').notifier).addTask(task);
+    _controller.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +60,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: const StickyNoteContainer(),
+      body: StickyNoteContainer(),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 15.0),
         child: Row(
@@ -73,14 +83,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             FloatingActionButton(
               backgroundColor: Colors.orangeAccent,
               onPressed: () {
-                final task = Task(
-                    text: _controller.text,
-                    completed: false,
-                    priority: 1,
-                    createdAt: '2024-07-14');
-                ref
-                    .read(AsyncTaskProvider('2024-07-14').notifier)
-                    .addTask(task);
+                submitTask();
               },
               tooltip: 'Add task',
               child: const Icon(Icons.add),

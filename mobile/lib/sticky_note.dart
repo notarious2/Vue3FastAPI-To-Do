@@ -42,7 +42,7 @@ class StickyNote extends ConsumerWidget {
                         );
                       },
                       background: Container(
-                        color: const Color.fromARGB(255, 210, 118, 203),
+                        color: Colors.orange,
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,20 +58,10 @@ class StickyNote extends ConsumerWidget {
                               overflow: TextOverflow.visible,
                             ),
                           ),
-                          const Spacer(),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Icon(Icons.edit),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  ref
-                                      .read(AsyncTaskProvider('2024-07-14')
-                                          .notifier)
-                                      .removeTask(item.id!);
-                                },
-                              ),
                               Checkbox(
                                 value: item.completed,
                                 checkColor: Colors.black,
@@ -83,6 +73,10 @@ class StickyNote extends ConsumerWidget {
                                     }
                                     return Colors.transparent;
                                   },
+                                ),
+                                side: WidgetStateBorderSide.resolveWith(
+                                  (states) =>
+                                      const BorderSide(color: Colors.black),
                                 ),
                                 onChanged: (bool? value) {
                                   ref
